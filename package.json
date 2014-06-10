@@ -1,0 +1,12 @@
+{
+    "schema_version": "1.0",
+    "name": "zip",
+    "label": "MX Zip",
+    "version": "3.0.1",
+    "types": ["plugin"],
+    "paths": {
+        "system": [
+            "system/expressionengine/third_party/zip"
+        ]
+    }
+}

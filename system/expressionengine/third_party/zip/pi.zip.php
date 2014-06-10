@@ -41,12 +41,10 @@ class Zip {
 
 	function Zip() {
 
-		$this->EE =& get_instance();
-
 		$LD = '\{';
 		$RD = '\}';
 		$SLASH = '\/';
-		$tagdata = $this->EE->TMPL->tagdata;
+		$tagdata = ee()->TMPL->tagdata;
 		$variable = "zip:files";
 		$file_status = true;
 
@@ -55,25 +53,25 @@ class Zip {
 
 		if ( preg_match( "/".LD.$variable.".*?".RD."(.*?)".LD.'\/'.$variable.RD."/s", $tagdata, $file_list ) ) {
 
-			$max_size = ( !$this->EE->TMPL->fetch_param( 'max_size' ) ) ?  ( 50*1024*1024 ) : ( $this->EE->TMPL->fetch_param( 'max_size' ) *1024*1024 );
-			$method  = $this->EE->TMPL->fetch_param( 'method' , 'php' ) ;
-			$direct_output = ( $this->EE->TMPL->fetch_param( 'direct_output' ) == 'yes' ) ? 'yes' :'no';
-			$overwrite = ( $this->EE->TMPL->fetch_param( 'overwrite', false ) ) ? $this->EE->TMPL->fetch_param( 'overwrite' )  : 'no' ;
+			$max_size = ( !ee()->TMPL->fetch_param( 'max_size' ) ) ?  ( 50*1024*1024 ) : ( ee()->TMPL->fetch_param( 'max_size' ) *1024*1024 );
+			$method  = ee()->TMPL->fetch_param( 'method' , 'php' ) ;
+			$direct_output = ( ee()->TMPL->fetch_param( 'direct_output' ) == 'yes' ) ? 'yes' :'no';
+			$overwrite = ( ee()->TMPL->fetch_param( 'overwrite', false ) ) ? ee()->TMPL->fetch_param( 'overwrite' )  : 'no' ;
 
-			$this->archive_name = $this->archive_fname = $this->EE->TMPL->fetch_param( 'filename', mktime().'.zip' );
-			$this->archive_folder = $this->EE->TMPL->fetch_param( 'folder', '' );
-			$this->large_files  = $this->EE->TMPL->fetch_param( 'large_files', 'yes' );
-			$this->remove_path = $this->EE->TMPL->fetch_param( 'remove_path', NULL );
-			$this->add_path = $this->EE->TMPL->fetch_param( 'add_path', NULL );
-			$this->comment = $this->EE->TMPL->fetch_param( 'comment', '' );
-			$this->no_compression = $this->EE->TMPL->fetch_param( 'no_compression', false );
-			$this->remove_all_path = $this->EE->TMPL->fetch_param( 'remove_all_path', false );
-			$this->speed = $this->EE->TMPL->fetch_param( 'speed', $this->speed );
+			$this->archive_name = $this->archive_fname = ee()->TMPL->fetch_param( 'filename', mktime().'.zip' );
+			$this->archive_folder = ee()->TMPL->fetch_param( 'folder', '' );
+			$this->large_files  = ee()->TMPL->fetch_param( 'large_files', 'yes' );
+			$this->remove_path = ee()->TMPL->fetch_param( 'remove_path', NULL );
+			$this->add_path = ee()->TMPL->fetch_param( 'add_path', NULL );
+			$this->comment = ee()->TMPL->fetch_param( 'comment', '' );
+			$this->no_compression = ee()->TMPL->fetch_param( 'no_compression', false );
+			$this->remove_all_path = ee()->TMPL->fetch_param( 'remove_all_path', false );
+			$this->speed = ee()->TMPL->fetch_param( 'speed', $this->speed );
 
 			// $overwrite  yes / no / keep_both
 			$pack_size = 0;
 
-			$this->archive_name = $this->EE->functions->remove_double_slashes( $this->archive_folder .'/'.$this->archive_name );
+			$this->archive_name = reduce_double_slashes( $this->archive_folder .'/'.$this->archive_name );
 
 			$filenames = explode( "]", str_replace( array( '&#47;', '[', "\n" ), array( '/', '', '' ), $file_list[1] ) );
 
@@ -101,7 +99,7 @@ class Zip {
 
 				for ( $i=0; $i < 99999 ; $i++ ) {
 					$this->archive_fname = $file_name.$i.'.zip';
-					$this->archive_name = $this->EE->functions->remove_double_slashes( $this->archive_folder .'/'.$this->archive_fname );
+					$this->archive_name = reduce_double_slashes( $this->archive_folder .'/'.$this->archive_fname );
 
 					$file_status = ( file_exists( $this->archive_name ) ) ? true : false;
 					if ( !$file_status ) break;
@@ -217,7 +215,7 @@ class Zip {
 			if ( file_exists( $path . $filename ) ) {
 				$return = true;
 			} else {
-				$this->errors['message_failure'][] = $this->EE->lang->line( 'system_method_error' );
+				$this->errors['message_failure'][] = ee()->lang->line( 'system_method_error' );
 			}
 		}
 	}
