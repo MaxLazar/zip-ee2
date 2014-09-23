@@ -59,7 +59,7 @@ class Zip {
 			$overwrite = ( ee()->TMPL->fetch_param( 'overwrite', false ) ) ? ee()->TMPL->fetch_param( 'overwrite' )  : 'no' ;
 
 			$this->archive_name = $this->archive_fname = ee()->TMPL->fetch_param( 'filename', mktime().'.zip' );
-			$this->archive_folder = ee()->TMPL->fetch_param( 'folder', '' );
+			$this->archive_folder = ee()->TMPL->fetch_param( 'folder', $this->cache_path );
 			$this->large_files  = ee()->TMPL->fetch_param( 'large_files', 'yes' );
 			$this->remove_path = ee()->TMPL->fetch_param( 'remove_path', NULL );
 			$this->add_path = ee()->TMPL->fetch_param( 'add_path', NULL );
@@ -78,10 +78,6 @@ class Zip {
 			$file_status = ( file_exists( $this->archive_name ) ) ? true : false;
 
 
-			// $file_status = ( file_exists( $this->archive_name ) ) ? false : true;
-			// $direct_output  == 'no' &&
-			// cleanup array
-
 			foreach ( $filenames as $key => $value ) {
 				$filenames[$key] = trim( $value );
 			}
@@ -93,7 +89,7 @@ class Zip {
 			};
 
 			if ( $overwrite == 'keep_both' && $file_status ) {
-				
+
 				$file_info = pathinfo($this->archive_name);
 				$file_name = basename($this->archive_name, '.' . $file_info['extension']);
 
@@ -109,7 +105,6 @@ class Zip {
 			if ( !$file_status ) {
 				$this->_backup_pkzip( $filenames );
 			};
-
 			if ( $direct_output == 'yes' ) {
 				$this->_download();
 				unlink( $this->archive_name );
@@ -155,6 +150,8 @@ class Zip {
 
 
 	function _backup_pkzip( $files_to_add ) {
+
+
 
 		if ( !defined( 'PCLZIP_TEMPORARY_DIR' ) ) {
 			define( 'PCLZIP_TEMPORARY_DIR', $this->cache_path );
